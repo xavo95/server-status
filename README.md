@@ -13,5 +13,5 @@ A very simple server status web frontend. Inspired by various others found on th
 
 * Clone the repo on the server. (eg. http://status.ineal.me/)
 * Update `script/config.php` with all your server info.
-* On every client: `wget http://status.ineal.me/statusupdate.txt` and rename extension to `.php` on the web root (or whatever matches your config). (eg. http://felix.ineal.me/statusupdate.php)
+* On every client: `wget http://status.ineal.me/statusupdate.php` on the web root (or whatever matches your config). (eg. http://felix.ineal.me/statusupdate.php)
 * Open the example http://status.ineal.me/ and see all your clients!
