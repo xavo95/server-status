@@ -12,6 +12,16 @@ function size_readable($size, $retstring = '%01.2f %s') {
 	return sprintf($retstring, $size, $prefix[$i]);
 }
 
+function get_level($progress) {
+	if($progress < '70') { 
+		return "success"; 
+	} elseif ($progress < '90') { 
+		return "warning"; 
+	} else { 
+		return "danger";
+	}
+}
+
 include "config.php";
 
 foreach($servers as $name => $info) {
@@ -20,21 +30,19 @@ foreach($servers as $name => $info) {
 
 	if(empty($status->uptime)) $status->uptime = '<span class="label label-important">DOWN</span>';
 
+	// memory
 	$status->memory->used = ($status->memory->used * 1024) - ($status->memory->bufcac * 1024);
 	$status->memory->total = $status->memory->total * 1024;
 	$status->memory->progress = $status->memory->used / $status->memory->total * 100;
-
-	if ($status->memory->progress < '70') { $status->memory->level = "success"; }
-	elseif ($status->memory->progress < '90') { $status->memory->level = "warning"; }
-	else { $status->memory->level = "danger"; }
-
-	$status->disk->used = size_readable($status->disk->used);
-	$status->disk->total = size_readable($status->disk->total);
-	$status->disk->progress = $status->disk->used / $status->disk->total * 100;
-
-	if ($status->disk->progress < '70') { $status->disk->level = "success"; }
-	elseif ($status->disk->progress < '90') { $status->disk->level = "warning"; }
-	else { $status->disk->level = "danger"; }
+	$status->memory->level = get_level($status->memory->progress);
+	
+	// disks
+	foreach($status->disks as $disk => $info) {
+		$status->disks->$disk->used = size_readable($info->used);
+		$status->disks->$disk->total = size_readable($info->total);
+		$status->disks->$disk->progress = $info->used / $info->total * 100;
+		$status->disks->$disk->level = get_level($status->disks->$disk->progress);
+	}
 
 	$servers->$name->status = $status;
 }

@@ -16,10 +16,19 @@ $return_data['memory']['free'] = intval(trim(shell_exec("free | grep -v shared |
 $return_data['memory']['bufcac'] = intval(trim(shell_exec("free | grep -v shared | awk '/Mem/ { printf $6 + $7 }'")));
 
 /**  HDD  **/
-$return_data['disk']['total'] = disk_total_space('/');
-$return_data['disk']['free'] = disk_free_space('/');
-$return_data['disk']['used'] = $return_data['disk']['total'] - $return_data['disk']['free'];
+// name => mount point
+$disks = array(
+	'local' => '/'
+	/*,
+	'USBDrive' => '/mnt/USBDrive'
+	*/
+);
 
+foreach($disks as $name => $location) {
+	$return_data['disks'][$name]['total'] = disk_total_space($location);
+	$return_data['disks'][$name]['free'] = disk_free_space($location);
+	$return_data['disks'][$name]['used'] = $return_data['disks'][$name]['total'] - $return_data['disks'][$name]['free'];
+}
 
 header('Content-Type: text/plain');
 

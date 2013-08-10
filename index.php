@@ -35,9 +35,10 @@
 							<thead>
 								<tr>
 									<th class="span2" scope="col">Name</th>
+									<th class="span2" scope="col">Type</th>
 									<th class="span2" scope="col">Uptime</th>
 									<th class="span3" scope="col">RAM</th>
-									<th class="span3" scope="col">Disk</th>
+									<th class="span3" scope="col">Disk(s)</th>
 									<th class="span2" scope="col">Load</th>
 								</tr>
 							</thead>
@@ -46,6 +47,7 @@
 
 								<tr>
 									<td><?= $name ?></td>
+									<td><?= $info->type ?></td>
 									<td><?= $info->status->uptime ?></td>
 									<td>
 										<?= size_readable($info->status->memory->used) ?> / <?= size_readable($info->status->memory->total) ?>
@@ -54,10 +56,12 @@
 										</div>
 									</td>
 									<td>
-										<?= $info->status->disk->used ?> / <?= $info->status->disk->total ?>
+										<?php foreach($info->status->disks as $name => $data): ?>
+										<strong><?=$name ?></strong> <?= $data->used ?> / <?= $data->total ?>
 										<div class="progress" style="height:15px;margin-bottom:0px;">
-											<div class="progress-bar progress-bar-<?= $info->status->disk->level ?>" style="width: <?= $info->status->disk->progress ?>%;"></div>
+											<div class="progress-bar progress-bar-<?= $data->level ?>" style="width: <?= $data->progress ?>%;"></div>
 										</div>
+										<?php endforeach ?>
 									</td>
 									<td>
 										<span class="label label-success"><?= $info->status->load->one ?></span>
@@ -77,6 +81,7 @@
 							<thead>
 								<tr>
 									<th class="span2" scope="col">Hostname</th>
+									<th class="span2" scope="col">Type</th>
 									<th class="span2" scope="col">Host</th>
 									<th class="span2" scope="col">Location</th>
 									<th class="span2" scope="col">RAM</th>
@@ -88,6 +93,7 @@
 							<?php foreach ($servers as $name => $info): ?>
 								<tr>
 									<td><?= $name ?></td>
+									<td><?= $info->type ?></td>
 									<td><?= $info->host ?></td>
 									<td><?= $info->location ?></td>
 									<td><?= $info->ram ?></td>
@@ -107,7 +113,7 @@
 			<hr>
 			<footer class="footer">
 				<p class="pull-right"><a href="#">Back to top</a></p>
-				<p>Copyright &copy; 2013 <?=$config->name ?></p>
+				<p>Copyright &copy; 2013 <?=$config->name ?><?php if(isset($config->github_url)):?><br><a href="<?=$config->github_url ?>">Fork me on GitHub!</a><?php endif ?></p>
 			</footer>
 		</div> <!-- /container -->
 		
