@@ -1,8 +1,11 @@
 <?php
 
+$config = (object) array(
+	'name' => 'iNeal.ME'
+);
+
 $servers = (object) array(
-	(object) array(
-		'name' => 'felix',
+	'felix' => (object) array(
 		'host' => 'Linode',
 		'location' => 'Dallas, TX',
 		'ram' => '1024 MB',
@@ -10,8 +13,7 @@ $servers = (object) array(
 		'bandwidth' => '2 TB',
 		'url' => 'http://felix.ineal.me/statusupdate'
 	),
-	(object) array(
-		'name' => 'carbon',
+	'carbon' => (object) array(
 		'host' => 'Digital Ocean',
 		'location' => 'Amsterdam',
 		'ram' => '512 MB',
@@ -19,8 +21,7 @@ $servers = (object) array(
 		'bandwidth' => '1 TB',
 		'url' => 'http://carbon.ineal.me/statusupdate'
 	),
-	(object) array(
-		'name' => 'oryx',
+	'oryx' => (object) array(
 		'host' => 'Backupsy',
 		'location' => 'Chicago, IL',
 		'ram' => '512 MB',
