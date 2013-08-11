@@ -30,10 +30,10 @@ foreach($servers as $name => $info) {
 
 	if(empty($status->uptime)) $status->uptime = '<span class="label label-important">DOWN</span>';
 
-	// memory
 	$status->memory->used = ($status->memory->used * 1024) - ($status->memory->bufcac * 1024);
 	$status->memory->total = $status->memory->total * 1024;
 	$status->memory->progress = $status->memory->used / $status->memory->total * 100;
+
 	$status->memory->level = get_level($status->memory->progress);
 	
 	// disks
@@ -46,5 +46,4 @@ foreach($servers as $name => $info) {
 
 	$servers->$name->status = $status;
 }
-
 ?>

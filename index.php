@@ -5,6 +5,7 @@
 		<meta charset="utf-8">
 		<title><?=$config->name ?> Server Status</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="refresh" content="100">
 		<link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet">
 		<style>
 			body { padding-top: 70px; }
@@ -16,11 +17,13 @@
 	<body>
 
 		<div class="navbar navbar-fixed-top navbar-inverse">
-			<a class="navbar-brand" href="#">Server Status</a>
-			<ul class="nav navbar-nav">
-				<li class="active"><a href="#status" data-toggle="tab">Status</a></li>
-				<li><a href="#servers" data-toggle="tab">Servers</a></li>
-			</ul>
+			<div class="container">
+				<a class="navbar-brand" href="#">Server Status</a>
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#status" data-toggle="tab">Status</a></li>
+					<li><a href="#servers" data-toggle="tab">Servers</a></li>
+				</ul>
+			</div>
 		</div>
 
 		<div class="container">
@@ -35,7 +38,6 @@
 							<thead>
 								<tr>
 									<th class="span2" scope="col">Name</th>
-									<th class="span2" scope="col">Type</th>
 									<th class="span2" scope="col">Uptime</th>
 									<th class="span3" scope="col">RAM</th>
 									<th class="span3" scope="col">Disk(s)</th>
@@ -47,19 +49,18 @@
 
 								<tr>
 									<td><?= $name ?></td>
-									<td><?= $info->type ?></td>
 									<td><?= $info->status->uptime ?></td>
 									<td>
 										<?= size_readable($info->status->memory->used) ?> / <?= size_readable($info->status->memory->total) ?>
-										<div class="progress" style="height:15px;margin-bottom:0px;">
-											<div class="progress-bar progress-bar-<?= $info->status->memory->level ?>" style="width: <?= $info->status->memory->progress ?>%;"></div>
+										<div class="progress progress-striped active" style="height:15px;margin-bottom:0px;">
+											<div class="progress-bar progress-bar-<?= $info->status->memory->level ?>" style="width: <?= $info->status->memory->progress ?>%;"><?= round($info->status->memory->progress) ?>%</div>
 										</div>
 									</td>
 									<td>
 										<?php foreach($info->status->disks as $name => $data): ?>
-										<strong><?=$name ?></strong> <?= $data->used ?> / <?= $data->total ?>
-										<div class="progress" style="height:15px;margin-bottom:0px;">
-											<div class="progress-bar progress-bar-<?= $data->level ?>" style="width: <?= $data->progress ?>%;"></div>
+										<strong><?=$name ?></strong> (<?= $data->location ?>): <?= $data->used ?> / <?= $data->total ?>
+										<div class="progress progress-striped active" style="height:15px;margin-bottom:0px;">
+											<div class="progress-bar progress-bar-<?= $data->level ?>" style="width: <?= $data->progress ?>%;"><?= round($data->progress) ?>%</div>
 										</div>
 										<?php endforeach ?>
 									</td>
@@ -82,6 +83,7 @@
 								<tr>
 									<th class="span2" scope="col">Hostname</th>
 									<th class="span2" scope="col">Type</th>
+									<th class="span2" scope="col">OS</th>
 									<th class="span2" scope="col">Host</th>
 									<th class="span2" scope="col">Location</th>
 									<th class="span2" scope="col">RAM</th>
@@ -94,6 +96,7 @@
 								<tr>
 									<td><?= $name ?></td>
 									<td><?= $info->type ?></td>
+									<td><?= $info->status->os ?></td>
 									<td><?= $info->host ?></td>
 									<td><?= $info->location ?></td>
 									<td><?= $info->ram ?></td>
