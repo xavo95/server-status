@@ -1,18 +1,19 @@
 <?php
 
 $config = (object) array(
-	'name' => 'Just a Penguin',
-	'github_url' => 'http://github.com/cj123/server-status'
+	'name' => 'XFrost Labs, LLC.',
+	'github_url' => 'https://github.com/xavo95/server-status'
 );
 
 $servers = (object) array(
-	'trifid' => (object) array(
-		'type' => 'Virtual Private Server',
-		'host' => 'Linode',
-		'location' => 'Dallas, TX',
+	'NNcubie' => (object) array(
+		'type' => 'Physical Server',
+		'os' => 'Arch Linux',
+		'host' => 'Self Hosted',
+		'location' => 'Castelldefels, CAT, ESP',
 		'ram' => '1024 MB',
-		'storage' => '48 GB',
-		'bandwidth' => '2 TB',
-		'url' => 'http://status.icj.me/statusupdate.php'
+		'storage' => '8 GB',
+		'bandwidth' => '10 TB',
+		'url' => 'https://www.main.xnet/statusupdate.php'
 	)
 );

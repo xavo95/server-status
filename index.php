@@ -1,14 +1,16 @@
-<?php include (__DIR__ . '/script/model.php'); ?>
+<?php include __dir__ . '/script/model.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title><?=$config->name ?> Server Status</title>
+		<title><?=$config->name?> Server Status</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="refresh" content="100">
-		<link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet">
+		<!--
+		<link href="https://status.main.xnet/css/bootstrap.min.css" rel="stylesheet">-->
+		<link href="https://status.main.xnet/css/bootstrap.css" rel="stylesheet">
 		<style>
-			body { padding-top: 70px; }
+			body { padding-top: 80px; }
 			.table-center th { vertical-align: middle; text-align: center; }
 			.table-center td { vertical-align: middle; text-align: center; }
 		</style>
@@ -16,13 +18,22 @@
 
 	<body>
 
-		<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
 				<a class="navbar-brand" href="#">Server Status</a>
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="#status" data-toggle="tab">Status</a></li>
-					<li><a href="#servers" data-toggle="tab">Servers</a></li>
-				</ul>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#status" data-toggle="tab">Status</a></li>
+						<li><a href="#servers" data-toggle="tab">Servers</a></li>
+					</ul>
+				</div><!--/.nav-collapse -->
 			</div>
 		</div>
 
@@ -40,40 +51,130 @@
 									<th class="span2" scope="col">Name</th>
 									<th class="span2" scope="col">Uptime</th>
 									<th class="span3" scope="col">RAM</th>
-									<th class="span3" scope="col">Disk(s)</th>
+									<th class="span3" scope="col">Swap</th>
+									<th class="span3" scope="col">Disk</th>
 									<th class="span2" scope="col">Load</th>
 								</tr>
 							</thead>
 							<tbody>
-								<?php foreach($servers as $name => $info): ?>
-
+<?php foreach ($servers as $name => $info): ?>
 								<tr>
-									<td><?= $name ?></td>
-									<td><?= $info->status->uptime ?></td>
+									<td><?=$name?></td>
+									<td><?=$info->status->uptime?></td>
 									<td>
-										<?= size_readable($info->status->memory->used) ?> / <?= size_readable($info->status->memory->total) ?>
-										<div class="progress progress-striped active" style="height:15px;margin-bottom:0px;">
-											<div class="progress-bar progress-bar-<?= $info->status->memory->level ?>" style="width: <?= $info->status->memory->progress ?>%;"><?= round($info->status->memory->progress) ?>%</div>
+										<?=size_readable($info->status->memory->used)?> / <?=size_readable($info->status->memory->total)?><br />
+										<div class="progress" style="height:15px;margin-bottom:0px;">
+											<div class="progress-bar progress-bar-<?=$info->status->memory->level?>" style="width: <?=$info->status->memory->progress?>%;"></div>
 										</div>
 									</td>
 									<td>
-										<?php foreach($info->status->disks as $name => $data): ?>
-										<strong><?=$name ?></strong> (<?= $data->location ?>): <?= $data->used ?> / <?= $data->total ?>
-										<div class="progress progress-striped active" style="height:15px;margin-bottom:0px;">
-											<div class="progress-bar progress-bar-<?= $data->level ?>" style="width: <?= $data->progress ?>%;"><?= round($data->progress) ?>%</div>
+										<?=size_readable($info->status->swap->used)?> / <?=size_readable($info->status->swap->total)?><br />
+										<div class="progress" style="height:15px;margin-bottom:0px;">
+											<div class="progress-bar progress-bar-<?=$info->status->swap->level?>" style="width: <?=$info->status->swap->progress?>%;"></div>
 										</div>
-										<?php endforeach ?>
 									</td>
 									<td>
-										<span class="label label-success"><?= $info->status->load->one ?></span>
-										<span class="label label-success"><?= $info->status->load->five ?></span>
-										<span class="label label-success"><?= $info->status->load->fifteen ?></span>
+										<?=size_readable($info->status->disk->used)?> / <?=size_readable($info->status->disk->total)?><br />
+										<div class="progress" style="height:15px;margin-bottom:0px;">
+											<div class="progress-bar progress-bar-<?=$info->status->disk->level?>" style="width: <?=$info->status->disk->progress?>%;"></div>
+										</div>
+									</td>
+									<td>
+										<span class="label label-success"><?=$info->status->load[0]?></span>
+										<span class="label label-success"><?=$info->status->load[1]?></span>
+										<span class="label label-success"><?=$info->status->load[2]?></span>
 									</td>
 								</tr>
-								<?php endforeach ?>
+<?php endforeach; ?>
 							</tbody>
 						</table>
 
+
+
+
+<table class="table table-bordered table-center">
+							<thead>
+								<tr>
+									<th class="span2" scope="col">Name</th>
+									<th class="span2" scope="col">DNS</th>
+									<th class="span2" scope="col">OpenVPN</th>
+									<th class="span2" scope="col">SSH</th>
+									<th class="span3" scope="col">HTTP</th>
+									<th class="span3" scope="col">Mysql</th>
+									<th class="span3" scope="col">Gitlab</th>
+									<th class="span3" scope="col">Email(SMTP)</th>
+									<th class="span3" scope="col">Email(POP3)</th>
+									<th class="span3" scope="col">Email(IMAP)</th>
+								</tr>
+							</thead>
+							<tbody>
+<?php foreach ($servers as $name => $info): ?>
+								<tr>
+									<td><?=$name?></td>
+									<td><?php if ($info->status->ports->dns->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->dns->port?> UDP</span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->dns->port?> UDP</span><?php endif;?></td>
+									<td><?php if ($info->status->ports->openvpn->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->openvpn->port?> UDP</span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->openvpn->port?> UDP</span><?php endif;?></td>
+									<td><?php if ($info->status->ports->ssh->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->ssh->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->ssh->port?></span><?php endif;?></td>
+									<td><?php if ($info->status->ports->http->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->http->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->http->port?></span><?php endif;?>
+									<?php if ($info->status->ports->https->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->https->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->https->port?></span><?php endif;?></td>
+									<td><?php if ($info->status->ports->mysql->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->mysql->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->mysql->port?></span><?php endif;?></td>
+									<td><?php if ($info->status->ports->gitlabssh->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->gitlabssh->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->gitlabssh->port?></span><?php endif;?>
+									    <?php if ($info->status->ports->gitlab->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->gitlab->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->gitlab->port?></span><?php endif;?></td>
+									<td><?php if ($info->status->ports->smtp->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->smtp->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->smtp->port?></span><?php endif;?>
+									    <?php if ($info->status->ports->smtpolds->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->smtpolds->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->smtpolds->port?></span><?php endif;?>
+									    <?php if ($info->status->ports->smtps->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->smtps->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->smtps->port?></span><?php endif;?></td>
+									 <td><?php if ($info->status->ports->pop3->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->pop3->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->pop3->port?></span><?php endif;?>
+									    <?php if ($info->status->ports->pop3s->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->pop3s->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->pop3s->port?></span><?php endif;?></td>
+									    <td><?php if ($info->status->ports->imap->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->imap->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->imap->port?></span><?php endif;?>
+									    <?php if ($info->status->ports->imaps->Status == 'Open'):?>
+										<span class="label label-success"><?=$info->status->ports->imaps->port?></span>
+									    <?php else:?>
+										<span class="label label-danger"><?=$info->status->ports->imaps->port?></span><?php endif;?></td>
+								</tr>
+<?php endforeach; ?>
+							</tbody>
+						</table>
 					</div>
 
 					<div class="tab-pane" id="servers">
@@ -92,18 +193,17 @@
 								</tr>
 							</thead>
 							<tbody>
-							<?php foreach ($servers as $name => $info): ?>
+<?php foreach ($servers as $name => $info): ?>
 								<tr>
-									<td><?= $name ?></td>
-									<td><?= $info->type ?></td>
-									<td><?= $info->status->os ?></td>
-									<td><?= $info->host ?></td>
-									<td><?= $info->location ?></td>
-									<td><?= $info->ram ?></td>
-									<td><?= $info->storage ?></td>
-									<td><?= $info->bandwidth ?></td>
+									<td><?=$name?></td>  										<td><?=$info->type?></td>
+									<td><?=$info->os?></td>
+									<td><?=$info->host?></td>
+									<td><?=$info->location?></td>
+									<td><?=$info->ram?></td>
+									<td><?=$info->storage?></td>
+									<td><?=$info->bandwidth?></td>
 								</tr>
-							<?php endforeach ?>
+<?php endforeach; ?>
 							</tbody>
 						</table>
 
@@ -116,11 +216,12 @@
 			<hr>
 			<footer class="footer">
 				<p class="pull-right"><a href="#">Back to top</a></p>
-				<p>Copyright &copy; 2013 <?=$config->name ?><?php if(isset($config->github_url)):?><br><a href="<?=$config->github_url ?>">Fork me on GitHub!</a><?php endif ?></p>
+				<p>Copyright &copy; 2015 <?=$config->name?><br /><a href="<?=$config->github_url?>">Fork me on GitHub!</a></p>
 			</footer>
-		</div> <!-- /container -->
-		
-		<script src="http://getbootstrap.com/assets/js/jquery.js"></script>
-		<script src="http://getbootstrap.com/dist/js/bootstrap.js"></script>
+		</div> <!-- /container 
+		<script src="https://status.main.xnet/js/jquery.min.js"></script>
+		<script src="https://status.main.xnet/js/bootstrap.min.js"></script>-->
+		<script src="https://status.main.xnet/js/jquery.js"></script>
+		<script src="https://status.main.xnet/js/bootstrap.js"></script>
 	</body>
 </html>

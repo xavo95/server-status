@@ -13,37 +13,33 @@ function size_readable($size, $retstring = '%01.2f %s') {
 }
 
 function get_level($progress) {
-	if($progress < '70') { 
-		return "success"; 
-	} elseif ($progress < '90') { 
-		return "warning"; 
-	} else { 
-		return "danger";
-	}
+	return (($progress > 90) ? 'danger' : (($progress > 70) ? 'warning' : 'success'));
 }
 
-include "config.php";
+include __dir__ . '/config.php';
 
-foreach($servers as $name => $info) {
+foreach ($servers as $name => $info) {
 
 	$status = json_decode(file_get_contents($info->url));
 
-	if(empty($status->uptime)) $status->uptime = '<span class="label label-important">DOWN</span>';
+	if (empty($status->uptime)) $status->uptime = '<span class="label label-important">DOWN</span>';
 
-	$status->memory->used = ($status->memory->used * 1024) - ($status->memory->bufcac * 1024);
-	$status->memory->total = $status->memory->total * 1024;
+	$status->load[0]          = sprintf('%.2f', $status->load[0]);
+	$status->load[1]          = sprintf('%.2f', $status->load[1]);
+	$status->load[2]          = sprintf('%.2f', $status->load[2]);
+
+	$status->memory->used     = $status->memory->used * 1024;
+	$status->memory->total    = $status->memory->total * 1024;
 	$status->memory->progress = $status->memory->used / $status->memory->total * 100;
+	$status->memory->level    = get_level($status->memory->progress);
 
-	$status->memory->level = get_level($status->memory->progress);
-	
-	// disks
-	foreach($status->disks as $disk => $info) {
-		$status->disks->$disk->used = size_readable($info->used);
-		$status->disks->$disk->total = size_readable($info->total);
-		$status->disks->$disk->progress = $info->used / $info->total * 100;
-		$status->disks->$disk->level = get_level($status->disks->$disk->progress);
-	}
+	$status->swap->used     = $status->swap->used * 1024;
+	$status->swap->total    = $status->swap->total * 1024;
+	$status->swap->progress = $status->swap->used / $status->swap->total * 100;
+	$status->swap->level    = get_level($status->swap->progress);
 
-	$servers->$name->status = $status;
+	$status->disk->progress   = $status->disk->used / $status->disk->total * 100;
+	$status->disk->level      = get_level($status->disk->progress);
+
+	$servers->$name->status   = $status;
 }
-?>

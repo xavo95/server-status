@@ -1,37 +1,90 @@
 <?php
 
-$return_data['hostname'] = trim(shell_exec('/bin/hostname'));
-
-/**  UPTIME **/
-$uptime = trim(shell_exec('/usr/bin/uptime'));
-$return_data['uptime'] = split('up ', split(', ', $uptime)[0])[1];
-$return_data['load']['one'] = split(', ', split('average: ', $uptime)[1])[0];
-$return_data['load']['five'] = split(', ', split('average: ', $uptime)[1])[1];
-$return_data['load']['fifteen'] = split(', ', split('average: ', $uptime)[1])[2];
-
-/**  MEMORY  **/
-$return_data['memory']['total'] = intval(trim(shell_exec("free | grep -v shared | awk '/Mem/ { printf $2 }'")));
-$return_data['memory']['used'] = intval(trim(shell_exec("free | grep -v shared | awk '/Mem/ { printf $3 }'")));
-$return_data['memory']['free'] = intval(trim(shell_exec("free | grep -v shared | awk '/Mem/ { printf $4 }'")));
-$return_data['memory']['bufcac'] = intval(trim(shell_exec("free | grep -v shared | awk '/Mem/ { printf $6 + $7 }'")));
-
-/**  HDD  **/
-// name => mount point
-$disks = array(
-	'local' => '/'
-	/*,
-	'USBDrive' => '/mnt/USBDrive'
-	*/
-);
-
-foreach($disks as $name => $location) {
-	$return_data['disks'][$name]['total'] = disk_total_space($location);
-	$return_data['disks'][$name]['free'] = disk_free_space($location);
-	$return_data['disks'][$name]['used'] = $return_data['disks'][$name]['total'] - $return_data['disks'][$name]['free'];
+function chkServer($host, $port)
+{
+    if (!$x = @fsockopen($host, $port, $errno, $errstr, 5)) // attempt to connect
+    {
+        return 'Closed';
+    }
+    else
+    {
+        if ($x)
+        {
+            @fclose($x); //close connection
+        }
+        return 'Open';
+    }
 }
+
+/**  DISK  **/
+$return_data['disk']['free']  = disk_free_space('/');
+$return_data['disk']['total'] = disk_total_space('/');
+$return_data['disk']['used']  = $return_data['disk']['total'] - $return_data['disk']['free'];
+
+/** LOAD **/
+$return_data['load'] = sys_getloadavg();
+
+/** MEMORY **/
+$fh = fopen('/proc/meminfo', 'r');
+while ($l = fgets($fh)) {
+	$meminfo[strtok($l, ':')] = trim(strtok(''));
+}
+fclose($fh);
+$return_data['memory']['bufcac'] = intval(str_replace(' kB', null, $meminfo['Buffers'])) + intval(str_replace(' kB', null, $meminfo['Cached']));
+$return_data['memory']['free']   = intval(str_replace(' kB', null, $meminfo['MemFree'])) + $return_data['memory']['bufcac'];
+$return_data['memory']['total']  = intval(str_replace(' kB', null, $meminfo['MemTotal']));
+$return_data['memory']['used']   = $return_data['memory']['total'] - $return_data['memory']['free'];
+/** SWAP **/
+$return_data['swap']['cache'] = intval(str_replace(' kB', null, $meminfo['SwapCached']));
+$return_data['swap']['free']   = intval(str_replace(' kB', null, $meminfo['SwapFree'])) + $return_data['swap']['cache'];
+$return_data['swap']['total']  = intval(str_replace(' kB', null, $meminfo['SwapTotal']));
+$return_data['swap']['used']   = $return_data['swap']['total'] - $return_data['swap']['free'];
+
+/** SERVERS: Change your ip or host, that example uses my own DNS Internal Server **/
+$return_data['ports']['smtp']['port'] = 25;
+$return_data['ports']['smtp']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['smtp']['port']);
+$return_data['ports']['smtpolds']['port'] = 465;
+$return_data['ports']['smtpolds']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['smtpolds']['port']);
+$return_data['ports']['smtps']['port'] = 587;
+$return_data['ports']['smtps']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['smtps']['port']);
+$return_data['ports']['pop3']['port'] = 110;
+$return_data['ports']['pop3']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['pop3']['port']);
+$return_data['ports']['pop3s']['port'] = 995;
+$return_data['ports']['pop3s']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['pop3s']['port']);
+$return_data['ports']['imap']['port'] = 143;
+$return_data['ports']['imap']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['imap']['port']);
+$return_data['ports']['imaps']['port'] = 993;
+$return_data['ports']['imaps']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['imaps']['port']);
+$return_data['ports']['dns']['port'] = 53;
+$return_data['ports']['dns']['Status'] = chkServer("udp://ns01.main.xnet", $return_data['ports']['dns']['port']);
+$return_data['ports']['http']['port'] = 80;
+$return_data['ports']['http']['Status'] = chkServer("tcp://www.main.xnet", $return_data['ports']['http']['port']);
+$return_data['ports']['https']['port'] = 443;
+$return_data['ports']['https']['Status'] = chkServer("tcp://www.main.xnet", $return_data['ports']['https']['port']);
+$return_data['ports']['mysql']['port'] = 3306;
+$return_data['ports']['mysql']['Status'] = chkServer("tcp://mysql.xnet", $return_data['ports']['mysql']['port']);
+$return_data['ports']['gitlab']['port'] = 8080;
+$return_data['ports']['gitlab']['Status'] = chkServer("tcp://git.main.xnet", $return_data['ports']['gitlab']['port']);
+$return_data['ports']['openvpn']['port'] = 1194;
+$return_data['ports']['openvpn']['Status'] = chkServer("udp://openvpn.xnet", $return_data['ports']['openvpn']['port']);
+$return_data['ports']['gitlabssh']['port'] = 22;
+$return_data['ports']['gitlabssh']['Status'] = chkServer("tcp://git.main.xnet", $return_data['ports']['gitlabssh']['port']);
+$return_data['ports']['ssh']['port'] = 2222;
+$return_data['ports']['ssh']['Status'] = chkServer("tcp://ssh.xnet", $return_data['ports']['ssh']['port']);
+
+/** UPTIME **/
+$fh = fopen('/proc/uptime', 'r');
+$uptime = fgets($fh);
+fclose($fh);
+$uptime_secs = $uptime % 60;
+$uptime_mins = floor($uptime / 60) % 60;
+$uptime_hrs  = floor($uptime / 60 / 60) % 24;
+$uptime_days = floor($uptime / 60 / 60 / 24);
+$return_data['uptime'] = $uptime_days > 0 ? $uptime_days . ' day'.($uptime_days > 1 ? 's' : '') : $uptime_hrs.':'.$uptime_mins.':'.$uptime_secs;
+
 
 header('Content-Type: text/plain');
 
-echo json_encode($return_data);
+print json_encode($return_data, JSON_PRETTY_PRINT);
 
 ?>
