@@ -1,6 +1,7 @@
 # server-status
 A very simple server status web frontend. Inspired by various others found on the internet, but were complicated.
-This is my modified version, it allows showing swap and principal services. You could add general services editing `index.php`, and then edit each `statusupdate.php` on each client(if the ports aren't generic).
+
+* This is my modified version, it allows showing swap and principal services. You could add general services editing `index.php`, and then edit each `statusupdate.php` on each client(if the ports aren't generic).
 
 * Also I added bootstrap locally so no need for direct access to files, if you want to update, go to getbootstrap.com, download and extract on that folder.
 
