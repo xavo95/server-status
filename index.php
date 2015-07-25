@@ -80,12 +80,12 @@
 											<div class="progress-bar progress-bar-<?=$info->status->disk->level?>" style="width: <?=$info->status->disk->progress?>%;"></div>
 										</div>
 									</td>
-									<td>Celsius<br/><?php if ($info->status->temp->Status == 'Success'):?>
-										<span class="label label-success"><?=$info->status->temp->grades?></span>
+									<td><?php if ($info->status->temp->Status == 'Success'):?>
+										<span class="label label-success">
 									    <?php elseif ($info->status->temp->Status == 'Warning'):?>
-										<span class="label label-warning"><?=$info->status->temp->grades?></span>
+										<span class="label label-warning">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->temp->grades?><?php endif;?></span></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->temp->grades?> Celsius</span></td>
 									<td>
 										<span class="label label-success"><?=$info->status->load[0]?></span>
 										<span class="label label-success"><?=$info->status->load[1]?></span>
@@ -119,65 +119,65 @@
 								<tr>
 									<td><?=$name?></td>
 									<td>UDP<br/><?php if ($info->status->ports->dns->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->dns->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->dns->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->dns->port?></span></td>
 									<td>UDP<br/><?php if ($info->status->ports->openvpn->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->openvpn->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->openvpn->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->openvpn->port?></span></td>
 									<td>TCP<br/><?php if ($info->status->ports->ssh->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->ssh->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->ssh->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->ssh->port?></span></td>
 									<td>TCP<br/><?php if ($info->status->ports->http->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->http->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->http->port?></span><?php endif;?>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->http->port?></span>
 									<?php if ($info->status->ports->https->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->https->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->https->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->https->port?></span></td>
 									<td>TCP<br/><?php if ($info->status->ports->mysql->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->mysql->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->mysql->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->mysql->port?></span></td>
 									<td>TCP<br/><?php if ($info->status->ports->gitlabssh->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->gitlabssh->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->gitlabssh->port?></span><?php endif;?>
+										<span class="label label-danger">><?php endif;?><?=$info->status->ports->gitlabssh->port?></span>
 									    <?php if ($info->status->ports->gitlab->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->gitlab->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->gitlab->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->gitlab->port?></span></td>
 									<td>TCP<br/><?php if ($info->status->ports->smtp->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->smtp->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->smtp->port?></span><?php endif;?>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->smtp->port?></span>
 									    <?php if ($info->status->ports->smtpolds->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->smtpolds->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->smtpolds->port?></span><?php endif;?>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->smtpolds->port?></span>
 									    <?php if ($info->status->ports->smtps->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->smtps->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->smtps->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->smtps->port?></span></td>
 									 <td>TCP<br/><?php if ($info->status->ports->pop3->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->pop3->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->pop3->port?></span><?php endif;?>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->pop3->port?></span>
 									    <?php if ($info->status->ports->pop3s->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->pop3s->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->pop3s->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->pop3s->port?></span></td>
 									    <td>TCP<br/><?php if ($info->status->ports->imap->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->imap->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->imap->port?></span><?php endif;?>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->imap->port?></span>
 									    <?php if ($info->status->ports->imaps->Status == 'Open'):?>
-										<span class="label label-success"><?=$info->status->ports->imaps->port?></span>
+										<span class="label label-success">
 									    <?php else:?>
-										<span class="label label-danger"><?=$info->status->ports->imaps->port?></span><?php endif;?></td>
+										<span class="label label-danger"><?php endif;?><?=$info->status->ports->imaps->port?></span></td>
 								</tr>
 <?php endforeach; ?>
 							</tbody>
