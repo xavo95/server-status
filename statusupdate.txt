@@ -15,6 +15,22 @@ function chkServer($host, $port)
         return 'Open';
     }
 }
+function chkTemp($temp, $ref)
+{
+    $diff = ($ref - $temp);
+    if ($diff < 50.000)
+    {
+        return 'Danger';
+    }
+    else if ($diff < 30.000)
+    {
+        return 'Warning';
+    }
+    else
+    {
+        return 'Success';
+    }
+}
 
 /**  DISK  **/
 $return_data['disk']['free']  = disk_free_space('/');
@@ -34,17 +50,17 @@ $return_data['memory']['bufcac'] = intval(str_replace(' kB', null, $meminfo['Buf
 $return_data['memory']['free']   = intval(str_replace(' kB', null, $meminfo['MemFree'])) + $return_data['memory']['bufcac'];
 $return_data['memory']['total']  = intval(str_replace(' kB', null, $meminfo['MemTotal']));
 $return_data['memory']['used']   = $return_data['memory']['total'] - $return_data['memory']['free'];
-/** SWAP **/
+
 $return_data['swap']['cache'] = intval(str_replace(' kB', null, $meminfo['SwapCached']));
 $return_data['swap']['free']   = intval(str_replace(' kB', null, $meminfo['SwapFree'])) + $return_data['swap']['cache'];
 $return_data['swap']['total']  = intval(str_replace(' kB', null, $meminfo['SwapTotal']));
 $return_data['swap']['used']   = $return_data['swap']['total'] - $return_data['swap']['free'];
 
-/** SERVERS: Change your ip or host, that example uses my own DNS Internal Server **/
+/** SERVERS **/
 $return_data['ports']['smtp']['port'] = 25;
 $return_data['ports']['smtp']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['smtp']['port']);
 $return_data['ports']['smtpolds']['port'] = 465;
-$return_data['ports']['smtpolds']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['smtpolds']['port']);
+$return_data['ports']['smtpolds']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['smtps']['port']);
 $return_data['ports']['smtps']['port'] = 587;
 $return_data['ports']['smtps']['Status'] = chkServer("tcp://mail.main.xnet", $return_data['ports']['smtps']['port']);
 $return_data['ports']['pop3']['port'] = 110;
@@ -81,6 +97,14 @@ $uptime_mins = floor($uptime / 60) % 60;
 $uptime_hrs  = floor($uptime / 60 / 60) % 24;
 $uptime_days = floor($uptime / 60 / 60 / 24);
 $return_data['uptime'] = $uptime_days > 0 ? $uptime_days . ' day'.($uptime_days > 1 ? 's' : '') : $uptime_hrs.':'.$uptime_mins.':'.$uptime_secs;
+
+/** TEMP **/
+$fhc = fopen('/sys/class/thermal/thermal_zone0/temp', 'r');
+$temp = fgets($fhc);
+fclose($fhc);
+$temp_cel = $temp / 1000;
+$return_data['temp']['grades'] = $temp_cel;
+$return_data['temp']['Status'] = chkTemp($temp_cel, 100.000);
 
 
 header('Content-Type: text/plain');

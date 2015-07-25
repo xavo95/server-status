@@ -41,5 +41,7 @@ foreach ($servers as $name => $info) {
 	$status->disk->progress   = $status->disk->used / $status->disk->total * 100;
 	$status->disk->level      = get_level($status->disk->progress);
 
+	$status->temp->grades	= sprintf('%.1f', $status->temp->grades);	
+
 	$servers->$name->status   = $status;
 }
